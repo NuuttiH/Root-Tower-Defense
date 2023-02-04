@@ -32,6 +32,7 @@ public class RootSystem : MonoBehaviour
     private GameObject _currentObject;
     private BuildingType _buildingType;
     private HashSet<Vector3Int> _buildingLocations;
+    private bool _clickCooldown = false;
 
     private void Awake()
     {
@@ -46,15 +47,15 @@ public class RootSystem : MonoBehaviour
 
         foreach(Vector3Int position in _startingRoots)
         {
-            BuildRoot(position);
+            BuildRoot(position, false);
         }
         foreach(Vector3Int position in _startingDefenses)
         {
-            BuildBuilding(position, BuildingType.Defense);
+            BuildBuilding(position, BuildingType.Defense, false);
         }
         foreach(Vector3Int position in _startingTreasures)
         {
-            BuildBuilding(position, BuildingType.Treasure);
+            BuildBuilding(position, BuildingType.Treasure, false);
         }
     }
 
@@ -76,29 +77,32 @@ public class RootSystem : MonoBehaviour
         }
 
         // Build
-        if(_currentObject != null && Input.GetMouseButtonUp(0))
+        if(!_clickCooldown) // Stop build from firing right after button click
         {
-            switch(_buildingType)
+            if(_currentObject != null && Input.GetMouseButtonUp(0))
             {
-                case BuildingType.Root:
-                    if(CanBePlaced())
-                        BuildRoot(GridLayout.WorldToCell(_currentObject.transform.position));
-                    break;
-                case BuildingType.Defense:
-                case BuildingType.Treasure:
-                    if(CanBeBuild())
-                        BuildBuilding(GridLayout.WorldToCell(_currentObject.transform.position), _buildingType);
-                    break;
+                switch(_buildingType)
+                {
+                    case BuildingType.Root:
+                        if(CanBePlaced())
+                            BuildRoot(GridLayout.WorldToCell(_currentObject.transform.position));
+                        break;
+                    case BuildingType.Defense:
+                    case BuildingType.Treasure:
+                        if(CanBeBuild())
+                            BuildBuilding(GridLayout.WorldToCell(_currentObject.transform.position), _buildingType);
+                        break;
+                }
+                Destroy(_currentObject);
+                _currentObject = null;
+                _buildingType = BuildingType.None;
             }
-            Destroy(_currentObject);
-            _currentObject = null;
-            _buildingType = BuildingType.None;
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonUp(1))
-        {
-            Destroy(_currentObject);
-            _currentObject = null;
-            _buildingType = BuildingType.None;
+            else if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonUp(1))
+            {
+                Destroy(_currentObject);
+                _currentObject = null;
+                _buildingType = BuildingType.None;
+            }
         }
     }
 
@@ -175,12 +179,25 @@ public class RootSystem : MonoBehaviour
         Debug.Log($"CanBePlaced: false, no root is adjacent to {position.x}, {position.y}.");
         return false;
     }
-    public static void BuildRoot(Vector3Int position)
+    public static void BuildRoot(Vector3Int position, bool pay = true)
     {
-        Debug.Log($"Building root in {position.x}, {position.y}.");
-        _instance._tilemap.SetTile(position, _instance._rootTile);
-        GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
-        obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
+        if(pay)
+        {
+            if(GameManager.TryUseMP(GameManager.RootCost))
+            {
+                Debug.Log($"Building root in {position.x}, {position.y}.");
+                _instance._tilemap.SetTile(position, _instance._rootTile);
+                GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
+                obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
+            }
+            else Debug.Log($"Building root failed, not enough money");
+        }
+        else
+        {
+            _instance._tilemap.SetTile(position, _instance._rootTile);
+            GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
+            obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
+        }
     }
 
     private bool CanBeBuild()
@@ -201,18 +218,42 @@ public class RootSystem : MonoBehaviour
         Debug.Log($"CanBeBuild: true, a free root is in {position.x}, {position.y}.");
         return true;
     }
-    public static void BuildBuilding(Vector3Int position, BuildingType buildingType)
+    public static void BuildBuilding(Vector3Int position, BuildingType buildingType, bool pay = true)
     {
         GameObject obj = null;
         switch(buildingType)
         {
             case BuildingType.Defense:
-                obj = Instantiate(_instance._defenseObject, _instance.gameObject.transform);
-                _instance._buildingLocations.Add(position);
+                if(pay)
+                {
+                    if(GameManager.TryUseMP(GameManager.DefenseCost))
+                    {
+                        obj = Instantiate(_instance._defenseObject, _instance.gameObject.transform);
+                        _instance._buildingLocations.Add(position);
+                    }
+                    else Debug.Log($"Building defense failed, not enough money");
+                }
+                else
+                {
+                    obj = Instantiate(_instance._defenseObject, _instance.gameObject.transform);
+                    _instance._buildingLocations.Add(position);
+                }
                 break;
             case BuildingType.Treasure:
-                obj = Instantiate(_instance._treasureObject, _instance.gameObject.transform);
-                _instance._buildingLocations.Add(position);
+                if(pay)
+                {
+                    if(GameManager.TryUseMP(GameManager.TreasureCost))
+                    {
+                        obj = Instantiate(_instance._treasureObject, _instance.gameObject.transform);
+                        _instance._buildingLocations.Add(position);
+                    }
+                    else Debug.Log($"Building defense failed, not enough money");
+                }
+                else
+                {
+                    obj = Instantiate(_instance._treasureObject, _instance.gameObject.transform);
+                    _instance._buildingLocations.Add(position);
+                }
                 break;
             case BuildingType.Destroyed:
                 obj = Instantiate(_instance._destroyedTreasureObject, _instance.gameObject.transform);
@@ -221,5 +262,16 @@ public class RootSystem : MonoBehaviour
                 break;
         }
         if(obj != null) obj.transform.position = _instance._tilemap.GetCellCenterWorld(position) + new Vector3(0f, 0.1f, 0f);
+    }
+
+    public static void ClickCooldown()
+    {
+        _instance._clickCooldown = true;
+        _instance.StartCoroutine(_instance.ClickCooldownOff());
+    }
+    IEnumerator ClickCooldownOff()
+    {
+        yield return new WaitForSeconds(0.2f);
+        _instance._clickCooldown = false;
     }
 }

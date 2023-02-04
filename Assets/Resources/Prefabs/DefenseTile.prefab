@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7732762307026785488}
   - component: {fileID: 1688761609014950920}
+  - component: {fileID: -7100878966423299144}
   m_Layer: 0
   m_Name: DefenseTile
   m_TagString: Untagged
@@ -84,3 +85,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-7100878966423299144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5570398616569756128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b149ade94a64d043951e737942eb6c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _projectilePrefab: {fileID: 5570398616569756128, guid: f5ad84cbd0aaeb342a245e8f5bb09a43, type: 3}
+  _baseDamage: 10
+  _baseAttackCooldown: 3
+  _baseRange: 3.4
