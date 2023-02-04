@@ -33,6 +33,7 @@ public class RootSystem : MonoBehaviour
     private BuildingType _buildingType;
     private HashSet<Vector3Int> _buildingLocations;
     private bool _clickCooldown = false;
+    private Vector3 _missVector = new Vector3(-100f, -100f, -100f);
 
     private void Awake()
     {
@@ -118,9 +119,10 @@ public class RootSystem : MonoBehaviour
             //Debug.Log(hit.collider.gameObject.name);
             return hit.point;
         }
-        else{
+        else
+        {
             //Debug.Log("No raycast hit");
-            return Vector3.zero;
+            return _instance._missVector;
         } 
     }
     public static Vector3 SnapCoordinateToGrid(Vector3 position)
@@ -147,8 +149,9 @@ public class RootSystem : MonoBehaviour
                 return;
         }
 
-        Vector3 position = SnapCoordinateToGrid(Vector3.zero);
+        Vector3 position = SnapCoordinateToGrid(_instance._missVector);
         obj.transform.position = position;
+        if(_instance._currentObject != null) Destroy(_instance._currentObject);
         _instance._currentObject = obj;
         _instance._buildingType = buildingType;
     }

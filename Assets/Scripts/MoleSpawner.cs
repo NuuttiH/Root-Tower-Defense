@@ -8,6 +8,10 @@ public class MoleSpawner : MonoBehaviour
     private List<Vector3> _spawnPoints;
 
     [SerializeField] private GameObject _molePrefab;
+    [SerializeField] private AudioEvent _moleSounds;
+    [SerializeField] private AudioEvent _moleDeath;
+    [SerializeField] private AudioEvent _moleAngrySounds;
+    [SerializeField] private AudioEvent _moleAngryDeath;
     private float _boostValue = 1f;
     [HideInInspector] public static float BoostValue { get { return _instance._boostValue; } }
 
@@ -62,5 +66,18 @@ public class MoleSpawner : MonoBehaviour
             
             _boostValue += _boostIncrement;
         }
+    }
+
+    public static AudioEvent GetSounds(bool mutant = false)
+    {
+        if(mutant || _instance._boostValue > Random.Range(1f, 25f))
+            return _instance._moleAngrySounds;
+        else return _instance._moleSounds;
+    }
+    public static AudioEvent GetDeathSounds(bool mutant = false)
+    {
+        if(mutant || _instance._boostValue > Random.Range(1f, 25f))
+            return _instance._moleAngryDeath;
+        else return _instance._moleDeath;
     }
 }

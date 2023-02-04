@@ -7,28 +7,48 @@ public class Mole : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private int _health = 20;
+    [SerializeField] private float _damageSlowdown = 0.75f;
     private int _rootsCounter;
+    private bool _mutant = false;
     private float _baseSpeed;
     private Treasure _target;
-    [SerializeField] private int _health = 20;
+    private AudioEvent _moleSounds;
+    private AudioEvent _moleDeath;
+    private float _lastHit = 0f;
     
 
     void Start()
     {
         float val = MoleSpawner.BoostValue;
+
+        // Chance for mutant mole if BoostValue < 3.5, otherwise +1 boost
+        if(val > 3.5f) val += 1f;
+        else if(val > 1.5f && val > Random.Range(1f, 50f)){
+            _health = (int)(_health * val);
+            val = 6;
+            _mutant = true;
+            _agent.speed = _agent.speed * val * 0.16f;
+        } 
+
         _baseSpeed = _agent.speed * val;
         _health =  (int)(_health * val);
         float colorMod = 1 / val;
         _renderer.color = new Color(1, colorMod, colorMod, 1);
-        if(val > 4f) val = 4f;
+
+        if(!_mutant && val > 5f) val = 5f;  // Max size for scale to stop giant moles
+
         var scale = this.gameObject.transform.GetChild(0).localScale;
         scale.x *= val;
         scale.y *= val;
         this.gameObject.transform.GetChild(0).localScale = scale;
 
+        _moleSounds = MoleSpawner.GetSounds(_mutant);
+        _moleDeath = MoleSpawner.GetDeathSounds(_mutant);
 
         SetNewTarget();
         StartCoroutine(UpdateSpeed());
+        StartCoroutine(MakeSomeNoise());
         GameManager.RegisterMole(this);
     }
 
@@ -88,13 +108,23 @@ public class Mole : MonoBehaviour
         SetNewTarget();
     }
 
+    IEnumerator MakeSomeNoise()
+    {
+        yield return new WaitForSeconds(Random.Range(0.2f, 12f));
+        var audioPlayer = new GameObject("Collapse audio", typeof (AudioSource)).GetComponent<AudioSource>();
+        audioPlayer.transform.position = this.gameObject.transform.position;
+        _moleSounds.Play(audioPlayer);
+        Destroy(audioPlayer.gameObject, audioPlayer.clip.length*audioPlayer.pitch);
+    }
     IEnumerator UpdateSpeed()
     {
-        while(true)
+        while(!_mutant) // Mutants don't get slowed down
         {
             yield return new WaitForSeconds(0.5f);
             if(_rootsCounter > 0) _agent.speed = 0.5f * _baseSpeed;
             else _agent.speed = _baseSpeed;
+
+            if(Time.time - _lastHit < 1.5f) _agent.speed *= _damageSlowdown;
         }
     }
 
@@ -103,7 +133,17 @@ public class Mole : MonoBehaviour
         _health -= damage;
         if(_health <= 0)
         {
-            Destroy(this.gameObject);
+            var audioPlayer = new GameObject("Collapse audio", typeof (AudioSource)).GetComponent<AudioSource>();
+			audioPlayer.transform.position = this.gameObject.transform.position;
+			_moleDeath.Play(audioPlayer);
+			Destroy(audioPlayer.gameObject, audioPlayer.clip.length*audioPlayer.pitch);
+            Destroy(this.gameObject, 0.1f);
+        }
+        else if(!_mutant)
+        {
+            // Slowdown from hit
+            _agent.speed *= _damageSlowdown;
+            _lastHit = Time.time;
         }
     }
 }

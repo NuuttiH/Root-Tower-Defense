@@ -57,7 +57,7 @@ NavMeshAgent:
   m_Height: 0.2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 3
 --- !u!65 &717799674265383495
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -86,6 +86,7 @@ MonoBehaviour:
   _agent: {fileID: 717799674265383489}
   _renderer: {fileID: 717799674631196183}
   _health: 20
+  _damageSlowdown: 0.75
 --- !u!54 &-1718295847595374861
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -112,6 +113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 717799674631196182}
   - component: {fileID: 717799674631196183}
+  - component: {fileID: 3150352335780468320}
   m_Layer: 0
   m_Name: Graphic
   m_TagString: Untagged
@@ -175,7 +177,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7f533265dc440bd4f9bf9f8a9b5f96ef, type: 3}
+  m_Sprite: {fileID: -1330014674, guid: 781b3905a6feb8a4fbbcc867c5bee640, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -186,3 +188,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &3150352335780468320
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717799674631196177}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8aec4b085fc35884cb2e43149ff9a30a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
