@@ -73,14 +73,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _startingRoots:
+  - {x: 6, y: 3, z: 0}
+  - {x: 7, y: 3, z: 0}
+  - {x: 8, y: 3, z: 0}
   - {x: 6, y: 2, z: 0}
-  - {x: 7, y: 2, z: 0}
   - {x: 8, y: 2, z: 0}
-  - {x: 6, y: 3, z: 0}
-  - {x: 8, y: 3, z: 0}
   _startingDefenses:
-  - {x: 6, y: 3, z: 0}
-  - {x: 8, y: 3, z: 0}
+  - {x: 6, y: 2, z: 0}
+  - {x: 8, y: 2, z: 0}
   _startingTreasures:
   - {x: 7, y: 3, z: 0}
 --- !u!1 &7850117847878563675

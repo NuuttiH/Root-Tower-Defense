@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _endgameUI;
 
     public static Action<int> onMpChange = delegate {};
+    public static Action<int> onRootPriceChange = delegate {};
+    public static Action<int> onDefensePriceChange = delegate {};
     public static Action<int> onTreasurePriceChange = delegate {};
 
     [Header("Game Settings")]
@@ -39,6 +41,8 @@ public class GameManager : MonoBehaviour
     public static int DefenseCost { get { return _instance._defenseCost; } }
     [SerializeField] private int _treasureCost = 125;
     public static int TreasureCost { get { return _instance._treasureCost; } }
+    [SerializeField] private float _buildCostIncrement = 1.04f;
+    [SerializeField] private float _treasureExtraCostIncrement = 1.15f;
     
 
     void Awake()
@@ -96,8 +100,9 @@ public class GameManager : MonoBehaviour
     public static void RegisterTreasure(Treasure t)
     {
         _instance._treasures.Add(t);
-        _instance._treasureCost = (int) (_instance._treasureCost * 1.2f);
-        onTreasurePriceChange(_instance._treasureCost);
+        _instance._treasureCost = (int) (_instance._treasureCost * _instance._treasureExtraCostIncrement);
+        //onTreasurePriceChange(_instance._treasureCost);
+        IncreaseBuildCost();
         _instance._baseIncome += t.Income;
     }
     public static void UnregisterTreasure(Treasure t)
@@ -124,5 +129,19 @@ public class GameManager : MonoBehaviour
             return true;
         }
         else return false;
+    }
+
+    public static void IncreaseBuildCost()
+    {
+        int increasedAmount = (int) (_instance._rootCost * _instance._buildCostIncrement);
+        if(increasedAmount == _instance._rootCost) _instance._rootCost++;
+        else _instance._rootCost = increasedAmount;
+        
+        _instance._defenseCost = (int) (_instance._defenseCost * _instance._buildCostIncrement);
+        _instance._treasureCost = (int) (_instance._treasureCost * _instance._buildCostIncrement);
+
+        onRootPriceChange(_instance._rootCost);
+        onDefensePriceChange(_instance._defenseCost);
+        onTreasurePriceChange(_instance._treasureCost);
     }
 }

@@ -29,6 +29,8 @@ public class GameUI : MonoBehaviour
 
         MpUpdate(GameManager.Mp);
         GameManager.onMpChange += MpUpdate;
+        GameManager.onRootPriceChange += RootPriceUpdate;
+        GameManager.onDefensePriceChange += DefensePriceUpdate;
         GameManager.onTreasurePriceChange += TreasurePriceUpdate;
     }
 
@@ -41,6 +43,16 @@ public class GameUI : MonoBehaviour
     private void MpUpdate(int newValue)
     {
         _mpTMP.text = "Magic power (mp): " + newValue;
+    }
+    private void RootPriceUpdate(int newValue)
+    {
+        _rootButton.gameObject.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text
+            = "expand (R)oots - " + newValue + "mp";
+    }
+    private void DefensePriceUpdate(int newValue)
+    {
+        _defenseButton.gameObject.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text
+            = "build (D)efences - " + newValue + "mp";
     }
     private void TreasurePriceUpdate(int newValue)
     {

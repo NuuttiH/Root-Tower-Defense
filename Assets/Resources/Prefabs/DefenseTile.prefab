@@ -98,6 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _projectilePrefab: {fileID: 5570398616569756128, guid: f5ad84cbd0aaeb342a245e8f5bb09a43, type: 3}
-  _baseDamage: 10
-  _baseAttackCooldown: 3
-  _baseRange: 3.4
+  _baseDamage: 11
+  _baseAttackCooldown: 2.7
+  _baseRange: 3.8

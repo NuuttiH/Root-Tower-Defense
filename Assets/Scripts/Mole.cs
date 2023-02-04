@@ -18,19 +18,18 @@ public class Mole : MonoBehaviour
         float val = MoleSpawner.BoostValue;
         _baseSpeed = _agent.speed * val;
         _health =  (int)(_health * val);
+        float colorMod = 1 / val;
+        _renderer.color = new Color(1, colorMod, colorMod, 1);
+        if(val > 4f) val = 4f;
         var scale = this.gameObject.transform.GetChild(0).localScale;
         scale.x *= val;
         scale.y *= val;
         this.gameObject.transform.GetChild(0).localScale = scale;
-        float colorMod = 1 / val;
-        _renderer.color = new Color(1, colorMod, colorMod, 1);
 
 
         SetNewTarget();
         StartCoroutine(UpdateSpeed());
         GameManager.RegisterMole(this);
-
-        ;
     }
 
     void OnDestroy()
