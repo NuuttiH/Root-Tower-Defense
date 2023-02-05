@@ -111,10 +111,7 @@ public class Mole : MonoBehaviour
     IEnumerator MakeSomeNoise()
     {
         yield return new WaitForSeconds(Random.Range(0.2f, 12f));
-        var audioPlayer = new GameObject("Collapse audio", typeof (AudioSource)).GetComponent<AudioSource>();
-        audioPlayer.transform.position = this.gameObject.transform.position;
-        _moleSounds.Play(audioPlayer);
-        Destroy(audioPlayer.gameObject, audioPlayer.clip.length*audioPlayer.pitch);
+        Tools.PlayAudio(this.gameObject, _moleSounds);
     }
     IEnumerator UpdateSpeed()
     {
@@ -133,10 +130,7 @@ public class Mole : MonoBehaviour
         _health -= damage;
         if(_health <= 0)
         {
-            var audioPlayer = new GameObject("Collapse audio", typeof (AudioSource)).GetComponent<AudioSource>();
-			audioPlayer.transform.position = this.gameObject.transform.position;
-			_moleDeath.Play(audioPlayer);
-			Destroy(audioPlayer.gameObject, audioPlayer.clip.length*audioPlayer.pitch);
+            Tools.PlayAudio(this.gameObject, _moleDeath);
             Destroy(this.gameObject, 0.1f);
         }
         else if(!_mutant)

@@ -144,6 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013526609fa2c4149b486e155b3fc0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _attackSound: {fileID: 11400000, guid: b2b5ca364d29518489a115c8b0f2a189, type: 2}
+  _hitSound: {fileID: 11400000, guid: 8941d92822f65524ca1f9b7a79a1c4a9, type: 2}
 --- !u!195 &1790672072975013027
 NavMeshAgent:
   m_ObjectHideFlags: 0

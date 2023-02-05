@@ -33,4 +33,12 @@ public static class Tools
         }
         return result;
     }
+
+    public static void PlayAudio(GameObject parent, AudioEvent audio)
+    {
+        var audioPlayer = new GameObject("AudioPlayer", typeof (AudioSource)).GetComponent<AudioSource>();
+        audioPlayer.transform.position = parent.transform.position;
+        audio.Play(audioPlayer);
+        UnityEngine.Object.Destroy(audioPlayer.gameObject, audioPlayer.clip.length*audioPlayer.pitch);
+    }
 }

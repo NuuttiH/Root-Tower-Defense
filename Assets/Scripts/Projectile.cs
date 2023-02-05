@@ -9,6 +9,8 @@ public class Projectile : MonoBehaviour
     private int _damage;
     private Mole _target;
     private Vector3 _targetPos;
+    [SerializeField] private AudioEvent _attackSound;
+    [SerializeField] private AudioEvent _hitSound;
     
     public void Init(int damage, Mole target)
     {
@@ -19,6 +21,7 @@ public class Projectile : MonoBehaviour
         _targetPos = _target.gameObject.transform.position;
         _agent.SetDestination(_targetPos);
         StartCoroutine(UpdateTarget());
+        Tools.PlayAudio(this.gameObject, _attackSound);
     }
 
     IEnumerator UpdateTarget()
@@ -45,6 +48,7 @@ public class Projectile : MonoBehaviour
     }
     IEnumerator Death()
     {
+        Tools.PlayAudio(this.gameObject, _hitSound);
         yield return new WaitForSeconds(0.2f);
         Destroy(this.gameObject);
     }
