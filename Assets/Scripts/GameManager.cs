@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _screenCover;
     [SerializeField] private Button _startButton;
     [SerializeField] private GameObject _endgameUI;
+    [SerializeField] private TowerData _towerData;
 
     public static Action<int> onMpChange = delegate {};
     public static Action<int> onRootPriceChange = delegate {};
@@ -43,6 +44,11 @@ public class GameManager : MonoBehaviour
     public static int TreasureCost { get { return _instance._treasureCost; } }
     [SerializeField] private float _buildCostIncrement = 1.04f;
     [SerializeField] private float _treasureExtraCostIncrement = 1.15f;
+    [SerializeField] private float _treasureBuffModifier = 0.05f;
+    private float _currentBuffModifier = 1f;
+    [HideInInspector] public static float BuffModifier { 
+        get { return _instance._currentBuffModifier; } 
+    }
     
 
     void Awake()
@@ -56,7 +62,10 @@ public class GameManager : MonoBehaviour
         _treasures = new HashSet<Treasure>();
         _moles = new HashSet<Mole>();
         onMpChange = delegate {};
+        onRootPriceChange = delegate {};
+        onDefensePriceChange = delegate {};
         onTreasurePriceChange = delegate {};
+        _towerData.Init();
 
 
         StartCoroutine(Income());
@@ -75,10 +84,20 @@ public class GameManager : MonoBehaviour
         while(true)
         {
             yield return new WaitForSeconds(1f);
-            _totalScore += _baseIncome;
-            _mp += _baseIncome;
+            int income = (int) (_baseIncome * _currentBuffModifier);
+            _totalScore += income;
+            _mp += income;
             onMpChange(_mp);
         }
+    }
+    public void KillMoney(bool mutant)
+    {
+        int income = 0;
+        if(mutant) income = (int) (_baseIncome * _currentBuffModifier);
+        else income = (int) (_baseIncome * _currentBuffModifier * 0.1f);
+        _totalScore += income;
+        _mp += income;
+        onMpChange(_mp);
     }
 
     public static void StartGame()
@@ -100,6 +119,8 @@ public class GameManager : MonoBehaviour
     public static void RegisterTreasure(Treasure t)
     {
         _instance._treasures.Add(t);
+        _instance._currentBuffModifier += _instance._treasureBuffModifier;
+        _instance._towerData.Recalculate();
         _instance._treasureCost = (int) (_instance._treasureCost * _instance._treasureExtraCostIncrement);
         //onTreasurePriceChange(_instance._treasureCost);
         IncreaseBuildCost();
@@ -108,6 +129,8 @@ public class GameManager : MonoBehaviour
     public static void UnregisterTreasure(Treasure t)
     {
         _instance._treasures.Remove(t);
+        _instance._currentBuffModifier -= _instance._treasureBuffModifier;
+        _instance._towerData.Recalculate();
         _instance._baseIncome -= t.Income;
         if(_instance._treasures.Count == 0) _instance.StartCoroutine(_instance.EndGame());
     }

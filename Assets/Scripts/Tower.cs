@@ -8,10 +8,7 @@ public class Tower : MonoBehaviour
     private Mole _target;
     private int _doubt;
     
-    [Header("Tower Settings")]
-    [SerializeField] private int _baseDamage = 10;
-    [SerializeField] private float _baseAttackCooldown = 1.5f;
-    [SerializeField] private float _baseRange = 3f;
+    [SerializeField] private TowerData _data;
 
     void Start()
     {
@@ -26,7 +23,7 @@ public class Tower : MonoBehaviour
                 _target = Tools.GetClosestFromSet(this.transform.position, GameManager.Moles);
             if(_target != null)
             {
-                if(Vector3.Distance(this.transform.position, _target.gameObject.transform.position) < _baseRange) 
+                if(Vector3.Distance(this.transform.position, _target.gameObject.transform.position) < _data.range) 
                     Fire();
                 else
                 {
@@ -35,7 +32,7 @@ public class Tower : MonoBehaviour
                     if(_doubt > 3) _target = null;
                 }
             }
-            yield return new WaitForSeconds(_baseAttackCooldown);
+            yield return new WaitForSeconds(_data.attackCooldown);
         }
     }
 
@@ -43,6 +40,6 @@ public class Tower : MonoBehaviour
     {
         GameObject obj = Instantiate(_projectilePrefab);
         obj.transform.position = this.gameObject.transform.position;
-        obj.GetComponent<Projectile>().Init(_baseDamage, _target);
+        obj.GetComponent<Projectile>().Init(_data.damage, _target);
     }
 }

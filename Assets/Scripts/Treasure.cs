@@ -9,6 +9,7 @@ public class Treasure : MonoBehaviour
     [HideInInspector] public int Income { 
         get { return _income; } 
     }
+    [SerializeField] private AudioEvent _breakingSound;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class Treasure : MonoBehaviour
     void OnDestroy()
     {
         GameManager.UnregisterTreasure(this);
+        Tools.PlayAudio(this.gameObject, _breakingSound);
         foreach(Mole mole in _moles) 
             if(mole != null) mole.SetNewTarget();
         RootSystem.BuildBuilding(

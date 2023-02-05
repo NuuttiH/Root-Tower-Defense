@@ -110,8 +110,20 @@ public class Mole : MonoBehaviour
 
     IEnumerator MakeSomeNoise()
     {
-        yield return new WaitForSeconds(Random.Range(0.2f, 12f));
-        Tools.PlayAudio(this.gameObject, _moleSounds);
+        if(!_mutant)
+        {
+            yield return new WaitForSeconds(Random.Range(0.2f, 12f));
+            Tools.PlayAudio(this.gameObject, _moleSounds);
+        }
+        else
+        {
+            Tools.PlayAudio(this.gameObject, _moleSounds);
+            while(true)
+            {
+                yield return new WaitForSeconds(Random.Range(2.5f, 6f));
+                Tools.PlayAudio(this.gameObject, _moleSounds);
+            }
+        }
     }
     IEnumerator UpdateSpeed()
     {
@@ -131,6 +143,7 @@ public class Mole : MonoBehaviour
         if(_health <= 0)
         {
             Tools.PlayAudio(this.gameObject, _moleDeath);
+            GameManager.KillMoney(_mutant);
             Destroy(this.gameObject, 0.1f);
         }
         else if(!_mutant)
