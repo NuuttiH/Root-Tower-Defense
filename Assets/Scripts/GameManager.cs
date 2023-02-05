@@ -45,8 +45,9 @@ public class GameManager : MonoBehaviour
     public static int DefenseCost { get { return _instance._defenseCost; } }
     [SerializeField] private int _treasureCost = 125;
     public static int TreasureCost { get { return _instance._treasureCost; } }
-    [SerializeField] private float _buildCostIncrement = 1.04f;
-    [SerializeField] private float _treasureExtraCostIncrement = 1.15f;
+    [SerializeField] private float _rootBuildCostIncrement = 1.05f;
+    [SerializeField] private float _defenseBuildCostIncrement = 1.10f;
+    [SerializeField] private float _treasureBuildCostIncrement = 1.15f;
     [SerializeField] private float _treasureBuffModifier = 0.05f;
     private float _currentBuffModifier = 1f;
     [HideInInspector] public static float BuffModifier { 
@@ -122,9 +123,6 @@ public class GameManager : MonoBehaviour
         _instance._treasures.Add(t);
         _instance._currentBuffModifier += _instance._treasureBuffModifier;
         _instance._towerData.Recalculate();
-        _instance._treasureCost = (int) (_instance._treasureCost * _instance._treasureExtraCostIncrement);
-        //onTreasurePriceChange(_instance._treasureCost);
-        IncreaseBuildCost();
         _instance._baseIncome += t.Income;
     }
     public static void UnregisterTreasure(Treasure t)
@@ -155,17 +153,24 @@ public class GameManager : MonoBehaviour
         else return false;
     }
 
-    public static void IncreaseBuildCost()
+    public static void IncreaseBuildCost(BuildingType buildingType)
     {
-        int increasedAmount = (int) (_instance._rootCost * _instance._buildCostIncrement);
-        if(increasedAmount == _instance._rootCost) _instance._rootCost++;
-        else _instance._rootCost = increasedAmount;
-        
-        _instance._defenseCost = (int) (_instance._defenseCost * _instance._buildCostIncrement);
-        _instance._treasureCost = (int) (_instance._treasureCost * _instance._buildCostIncrement);
-
-        onRootPriceChange(_instance._rootCost);
-        onDefensePriceChange(_instance._defenseCost);
-        onTreasurePriceChange(_instance._treasureCost);
+        switch(buildingType)
+        {
+            case BuildingType.Root:
+                int increasedAmount = (int) (_instance._rootCost * _instance._rootBuildCostIncrement);
+                if(increasedAmount == _instance._rootCost) _instance._rootCost++;
+                else _instance._rootCost = increasedAmount;
+                onRootPriceChange(_instance._rootCost);
+                break;
+            case BuildingType.Defense:
+                _instance._defenseCost = (int) (_instance._defenseCost * _instance._defenseBuildCostIncrement);
+                onDefensePriceChange(_instance._defenseCost);
+                break;
+            case BuildingType.Treasure:
+                _instance._treasureCost = (int) (_instance._treasureCost * _instance._treasureBuildCostIncrement);
+                onTreasurePriceChange(_instance._treasureCost);
+                break;
+        }
     }
 }

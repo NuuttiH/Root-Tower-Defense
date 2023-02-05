@@ -194,7 +194,7 @@ public class RootSystem : MonoBehaviour
                 _instance._tilemap.SetTile(position, _instance._rootTile);
                 GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
                 obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
-                GameManager.IncreaseBuildCost();
+                GameManager.IncreaseBuildCost(BuildingType.Root);
             }
             //else Debug.Log($"Building root failed, not enough money");
         }
@@ -203,7 +203,6 @@ public class RootSystem : MonoBehaviour
             _instance._tilemap.SetTile(position, _instance._rootTile);
             GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
             obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
-            GameManager.IncreaseBuildCost();
         }
     }
 
@@ -237,7 +236,7 @@ public class RootSystem : MonoBehaviour
                     {
                         obj = Instantiate(_instance._defenseObject, _instance.gameObject.transform);
                         _instance._buildingLocations.Add(position);
-                        GameManager.IncreaseBuildCost();
+                        GameManager.IncreaseBuildCost(BuildingType.Defense);
                     }
                     //else Debug.Log($"Building defense failed, not enough money");
                 }
@@ -245,7 +244,6 @@ public class RootSystem : MonoBehaviour
                 {
                     obj = Instantiate(_instance._defenseObject, _instance.gameObject.transform);
                     _instance._buildingLocations.Add(position);
-                    GameManager.IncreaseBuildCost();
                 }
                 break;
             case BuildingType.Treasure:
@@ -255,7 +253,7 @@ public class RootSystem : MonoBehaviour
                     {
                         obj = Instantiate(_instance._treasureObject, _instance.gameObject.transform);
                         _instance._buildingLocations.Add(position);
-                        GameManager.IncreaseBuildCost();
+                        GameManager.IncreaseBuildCost(BuildingType.Treasure);
                     }
                     //else Debug.Log($"Building defense failed, not enough money");
                 }
@@ -263,7 +261,6 @@ public class RootSystem : MonoBehaviour
                 {
                     obj = Instantiate(_instance._treasureObject, _instance.gameObject.transform);
                     _instance._buildingLocations.Add(position);
-                    GameManager.IncreaseBuildCost();
                 }
                 break;
             case BuildingType.Destroyed:

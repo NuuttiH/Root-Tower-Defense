@@ -28,7 +28,7 @@ public class Mole : MonoBehaviour
             _health = (int)(_health * val);
             val = 6;
             _mutant = true;
-            _agent.speed = _agent.speed * val * 0.14f;
+            _agent.speed = _agent.speed * val * 0.15f;
         } 
 
         _baseSpeed = _agent.speed * val;

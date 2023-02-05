@@ -49,7 +49,7 @@ public class Projectile : MonoBehaviour
     IEnumerator Death()
     {
         Tools.PlayAudio(this.gameObject, _hitSound);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.05f);
         Destroy(this.gameObject);
     }
 }
