@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button _startButton;
     [SerializeField] private GameObject _endgameUI;
     [SerializeField] private TowerData _towerData;
+    [HideInInspector] public static TowerData TowerData { 
+        get { return _instance._towerData; } 
+    }
 
     public static Action<int> onMpChange = delegate {};
     public static Action<int> onRootPriceChange = delegate {};
@@ -90,14 +93,12 @@ public class GameManager : MonoBehaviour
             onMpChange(_mp);
         }
     }
-    public void KillMoney(bool mutant)
+    public static void ExtraIncome()
     {
-        int income = 0;
-        if(mutant) income = (int) (_baseIncome * _currentBuffModifier);
-        else income = (int) (_baseIncome * _currentBuffModifier * 0.1f);
-        _totalScore += income;
-        _mp += income;
-        onMpChange(_mp);
+        int income = (int) (_instance._baseIncome * _instance._currentBuffModifier);
+        _instance._totalScore += income;
+        _instance._mp += income;
+        onMpChange(_instance._mp);
     }
 
     public static void StartGame()

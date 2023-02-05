@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2818e05a722abef4faeb037c690d7424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _income: 8
+  _income: 6
   _breakingSound: {fileID: 11400000, guid: 4a43173d5cb93704789f3806a2743a7f, type: 2}
 --- !u!65 &7327002183459942419
 BoxCollider:

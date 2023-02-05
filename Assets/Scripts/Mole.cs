@@ -143,7 +143,7 @@ public class Mole : MonoBehaviour
         if(_health <= 0)
         {
             Tools.PlayAudio(this.gameObject, _moleDeath);
-            GameManager.KillMoney(_mutant);
+            if(_mutant) GameManager.ExtraIncome();
             Destroy(this.gameObject, 0.1f);
         }
         else if(!_mutant)

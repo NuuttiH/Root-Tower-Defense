@@ -162,26 +162,26 @@ public class RootSystem : MonoBehaviour
 
         // Check that the location is empty and next to a root
         if(_instance._tilemap.GetTile(position) == _instance._rootTile){
-            Debug.Log($"CanBePlaced: false, {position.x}, {position.y} is occupied.");
+            //Debug.Log($"CanBePlaced: false, {position.x}, {position.y} is occupied.");
             return false;
         }
         if(_instance._tilemap.GetTile(position + new Vector3Int(1, 0, 0)) == _instance._rootTile){
-            Debug.Log($"CanBePlaced: True, adjacent root in {position.x + 1}, {position.y}.");
+            //Debug.Log($"CanBePlaced: True, adjacent root in {position.x + 1}, {position.y}.");
             return true;
         }
         if(_instance._tilemap.GetTile(position + new Vector3Int(0, 1, 0)) == _instance._rootTile){
-            Debug.Log($"CanBePlaced: true, adjacent root in {position.x}, {position.y + 1}.");
+            //Debug.Log($"CanBePlaced: true, adjacent root in {position.x}, {position.y + 1}.");
             return true;
         }
         if(_instance._tilemap.GetTile(position + new Vector3Int(-1, 0, 0)) == _instance._rootTile){
-            Debug.Log($"CanBePlaced: true, adjacent root in {position.x - 1}, {position.y}.");
+            //Debug.Log($"CanBePlaced: true, adjacent root in {position.x - 1}, {position.y}.");
             return true;
         }
         if(_instance._tilemap.GetTile(position + new Vector3Int(0, -1, 0)) == _instance._rootTile){
-            Debug.Log($"CanBePlaced: true, adjacent root in {position.x}, {position.y - 1}.");
+            //Debug.Log($"CanBePlaced: true, adjacent root in {position.x}, {position.y - 1}.");
             return true;
         }
-        Debug.Log($"CanBePlaced: false, no root is adjacent to {position.x}, {position.y}.");
+        //Debug.Log($"CanBePlaced: false, no root is adjacent to {position.x}, {position.y}.");
         return false;
     }
     public static void BuildRoot(Vector3Int position, bool pay = true)
@@ -190,13 +190,13 @@ public class RootSystem : MonoBehaviour
         {
             if(GameManager.TryUseMP(GameManager.RootCost))
             {
-                Debug.Log($"Building root in {position.x}, {position.y}.");
+                //Debug.Log($"Building root in {position.x}, {position.y}.");
                 _instance._tilemap.SetTile(position, _instance._rootTile);
                 GameObject obj = Instantiate(_instance._hiddenRootObject, _instance.gameObject.transform);
                 obj.transform.position = _instance._tilemap.GetCellCenterWorld(position);
                 GameManager.IncreaseBuildCost();
             }
-            else Debug.Log($"Building root failed, not enough money");
+            //else Debug.Log($"Building root failed, not enough money");
         }
         else
         {
@@ -213,16 +213,16 @@ public class RootSystem : MonoBehaviour
 
         // Check that the location has a root, but no building
         if(_instance._tilemap.GetTile(position) != _rootTile){
-            Debug.Log($"CanBeBuild: false, {position.x}, {position.y} has no root.");
+            //Debug.Log($"CanBeBuild: false, {position.x}, {position.y} has no root.");
             return false;
         }
         if(_instance._buildingLocations.Contains(position))
         {
-            Debug.Log($"CanBeBuild: false, {position.x}, {position.y} already has a building.");
+            //Debug.Log($"CanBeBuild: false, {position.x}, {position.y} already has a building.");
             return false;
         }
         
-        Debug.Log($"CanBeBuild: true, a free root is in {position.x}, {position.y}.");
+        //Debug.Log($"CanBeBuild: true, a free root is in {position.x}, {position.y}.");
         return true;
     }
     public static void BuildBuilding(Vector3Int position, BuildingType buildingType, bool pay = true)
@@ -239,7 +239,7 @@ public class RootSystem : MonoBehaviour
                         _instance._buildingLocations.Add(position);
                         GameManager.IncreaseBuildCost();
                     }
-                    else Debug.Log($"Building defense failed, not enough money");
+                    //else Debug.Log($"Building defense failed, not enough money");
                 }
                 else
                 {
@@ -257,7 +257,7 @@ public class RootSystem : MonoBehaviour
                         _instance._buildingLocations.Add(position);
                         GameManager.IncreaseBuildCost();
                     }
-                    else Debug.Log($"Building defense failed, not enough money");
+                    //else Debug.Log($"Building defense failed, not enough money");
                 }
                 else
                 {

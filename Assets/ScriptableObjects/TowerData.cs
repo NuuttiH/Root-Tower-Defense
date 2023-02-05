@@ -8,7 +8,7 @@ public enum TowerStat { None, Damage, Cooldown, Range }
 public class TowerData : ScriptableObject
 {
     
-    [Header("Tower Settings")]
+    [Header("Tower settings")]
     [SerializeField] private int _baseDamage = 11;
     [SerializeField] private float _baseAttackCooldown = 2.7f;
     [SerializeField] private float _baseRange = 3.8f;
@@ -37,7 +37,7 @@ public class TowerData : ScriptableObject
         float modifier = GameManager.BuffModifier;
         damage = (int) (_baseDamage * modifier * damageMod);
         attackCooldown = _baseAttackCooldown * (1f / (modifier * attackCooldownMod));
-        range = _baseRange * (1f + (modifier * attackCooldownMod - 1f) / 4f);
+        range = _baseRange * modifier * attackCooldownMod;
     }
 
     public void Adjust(TowerStat stat, float modifier)
@@ -54,7 +54,7 @@ public class TowerData : ScriptableObject
                 break;
             case TowerStat.Range:
                 rangeMod += modifier;
-                range = _baseRange * (1f + (attackCooldownMod * GameManager.BuffModifier - 1f) / 4f);
+                range = _baseRange * attackCooldownMod * GameManager.BuffModifier;
                 break;
             default:
                 break;
